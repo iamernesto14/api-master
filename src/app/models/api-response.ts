@@ -17,3 +17,8 @@ export interface ApiError {
   status: number;
   error?: any;
 }
+
+export interface CacheEntry<T> {
+  data: T;
+  timestamp: number;
+}
