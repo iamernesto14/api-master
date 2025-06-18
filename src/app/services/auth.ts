@@ -12,7 +12,6 @@ export class AuthService {
   isAuthenticated$: Observable<boolean>;
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {
-    // Initialize BehaviorSubject safely
     this.isAuthenticatedSubject = new BehaviorSubject<boolean>(this.hasToken());
     this.isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
   }
