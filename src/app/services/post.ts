@@ -14,6 +14,7 @@ export class PostService {
   private localPosts = signal<Post[]>([]);
   private post = signal<Post | null>(null);
   private comments = signal<Comment[]>([]);
+  private totalItems = signal<number>(0);
   error = signal<string | null>(null);
 
   private readonly LOCAL_STORAGE_KEY = 'local_posts';
@@ -21,6 +22,7 @@ export class PostService {
   allPosts = computed(() => [...this.localPosts(), ...this.posts()]);
   currentPost = computed(() => this.post());
   currentComments = computed(() => this.comments());
+  totalPosts = computed(() => this.totalItems());
 
   constructor(
     private apiService: ApiService,
@@ -52,19 +54,20 @@ export class PostService {
 
   loadPosts(page: number, limit: number): void {
     this.apiService.getPosts(page, limit).subscribe({
-      next: (posts) => {
+      next: ({ posts, total }) => {
         this.posts.set(posts);
+        this.totalItems.set(total);
         this.error.set(null);
       },
       error: (err) => {
         this.error.set(err.message);
         this.posts.set([]);
+        this.totalItems.set(0);
       }
     });
   }
 
   loadPost(id: number): Observable<Post> {
-    // Check localPosts first
     const localPost = this.localPosts().find(post => post.id === id);
     if (localPost) {
       this.post.set(localPost);
@@ -72,7 +75,6 @@ export class PostService {
       return of(localPost);
     }
 
-    // Fetch from API if not local
     return this.apiService.getPost(id).pipe(
       tap(post => {
         this.post.set(post);

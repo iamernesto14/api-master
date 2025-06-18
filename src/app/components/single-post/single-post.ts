@@ -1,6 +1,7 @@
 import { Component, OnInit, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
+import { Location } from '@angular/common'; // Add Location
 import { PostService } from '../../services/post';
 import { Post } from '../../models/post';
 import { Comment } from '../../models/comment';
@@ -19,9 +20,9 @@ export class SinglePostComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private postService: PostService
+    private postService: PostService,
+    private location: Location // Inject Location
   ) {
-    // Reactively update comments when currentComments signal changes
     effect(() => {
       const comments: Comment[] = this.postService.currentComments();
       this.comments = comments;
@@ -47,5 +48,9 @@ export class SinglePostComponent implements OnInit {
 
   private loadComments(postId: number): void {
     this.postService.loadComments(postId);
+  }
+
+  goBack(): void {
+    this.location.back(); // Navigate to previous page in history
   }
 }

@@ -1,16 +1,22 @@
-<div class="single-post-container">
-  <div *ngIf="errorMessage" class="error-message">
-    {{ errorMessage }}
-  </div>
-  <div *ngIf="post" class="post">
-    <h1>{{ post.title }}</h1>
-    <p>{{ post.body }}</p>
-  </div>
-  <div class="comments">
-    <h2>Comments</h2>
-    <div *ngIf="comments.length === 0">No comments available.</div>
-    <div *ngFor="let comment of comments" class="comment">
-      <p><strong>{{ comment.name }}</strong>: {{ comment.body }}</p>
-    </div>
-  </div>
+<section class="post-header">
+  <button (click)="goBack()" class="btn">Back</button>
+</section>
+
+<div *ngIf="errorMessage" class="error">
+  {{ errorMessage }}
 </div>
+
+<div *ngIf="post" class="post-content">
+  <h1>{{ post.title }}</h1>
+  <p>{{ post.body }}</p>
+</div>
+
+<section class="comments-section">
+  <h2>Comments</h2>
+  <div *ngIf="!comments.length" class="no-comments">
+    No comments available.
+  </div>
+  <div *ngFor="let comment of comments" class="comment">
+    <strong>{{ comment.name }}:</strong> {{ comment.body }}
+  </div>
+</section>

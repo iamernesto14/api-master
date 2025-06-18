@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
 import { Post } from '../models/post';
 import { Comment } from '../models/comment';
 import { environment } from '../../environments/environment';
@@ -21,19 +21,23 @@ export class ApiService {
     private errorHandler: ErrorHandlerService
   ) {}
 
-  getPosts(page: number = 1, limit: number = 10): Observable<Post[]> {
+  getPosts(page: number = 1, limit: number = 10): Observable<{ posts: Post[], total: number }> {
     const url = `${this.apiUrl}/posts`;
     let params = new HttpParams()
       .set('_page', page.toString())
       .set('_limit', limit.toString());
     const cacheKey = this.getCacheKey(url, params);
 
-    const cached = this.getCachedData<Post[]>(cacheKey);
+    const cached = this.getCachedData<{ posts: Post[], total: number }>(cacheKey);
     if (cached) {
       return of(cached);
     }
 
-    return this.http.get<Post[]>(url, { params }).pipe(
+    return this.http.get<Post[]>(url, { params, observe: 'response' }).pipe(
+      map((response: HttpResponse<Post[]>) => ({
+        posts: response.body || [],
+        total: parseInt(response.headers.get('X-Total-Count') || '100', 10)
+      })),
       this.errorHandler.retryRequest(),
       tap(data => this.setCache(cacheKey, data)),
       catchError(error => this.errorHandler.handleError(error))
@@ -75,7 +79,7 @@ export class ApiService {
   createPost(post: Partial<Post>): Observable<Post> {
     const url = `${this.apiUrl}/posts`;
     return this.http.post<Post>(url, post).pipe(
-      tap(() => this.clearCache()), // Invalidate cache on create
+      tap(() => this.clearCache()),
       catchError(error => this.errorHandler.handleError(error))
     );
   }
@@ -83,7 +87,7 @@ export class ApiService {
   updatePost(id: number, post: Partial<Post>): Observable<Post> {
     const url = `${this.apiUrl}/posts/${id}`;
     return this.http.put<Post>(url, post).pipe(
-      tap(() => this.clearCache()), // Invalidate cache on update
+      tap(() => this.clearCache()),
       catchError(error => this.errorHandler.handleError(error))
     );
   }
@@ -91,7 +95,7 @@ export class ApiService {
   deletePost(id: number): Observable<void> {
     const url = `${this.apiUrl}/posts/${id}`;
     return this.http.delete<void>(url).pipe(
-      tap(() => this.clearCache()), // Invalidate cache on delete
+      tap(() => this.clearCache()),
       catchError(error => this.errorHandler.handleError(error))
     );
   }

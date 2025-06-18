@@ -1,10 +1,11 @@
 import { Component, OnInit, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 import { Post } from '../../models/post';
 import { PostService } from '../../services/post';
 import { AuthService } from '../../services/auth';
 import { PaginationComponent } from '../pagination/pagination';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-posts-list',
@@ -18,17 +19,18 @@ export class PostsListComponent implements OnInit {
   errorMessage: string | null = null;
   currentPage: number = 1;
   pageSize: number = 10;
-  totalItems: number = 100;
+  totalItems: number = 0;
 
   constructor(
     private postService: PostService,
-    private authService: AuthService
+    private authService: AuthService,
+    private toastr: ToastrService,
+    private router: Router
   ) {
-    // Reactively update posts and errorMessage when signals change
     effect(() => {
-      const allPosts: Post[] = this.postService.allPosts();
-      this.posts = allPosts.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize);
+      this.posts = this.postService.allPosts();
       this.errorMessage = this.postService.error();
+      this.totalItems = this.postService.totalPosts();
     });
   }
 
@@ -47,6 +49,8 @@ export class PostsListComponent implements OnInit {
 
   logout(): void {
     this.authService.logout();
-    this.postService.clearLocalPosts(); // Clear local posts on logout
+    this.postService.clearLocalPosts();
+    this.toastr.success('You have been logged out', 'Goodbye');
+    this.router.navigate(['/login']);
   }
 }
