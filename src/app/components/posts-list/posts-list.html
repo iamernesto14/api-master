@@ -1,5 +1,8 @@
 <div class="posts-container">
-  <h1>Posts List</h1>
+  <div class="header">
+    <h1>Posts List</h1>
+    <button (click)="logout()" class="logout-button">Logout</button>
+  </div>
   <div *ngIf="errorMessage" class="error-message">
     {{ errorMessage }}
   </div>
