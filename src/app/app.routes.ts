@@ -4,6 +4,6 @@ import { SinglePost } from './components/single-post/single-post';
 
 export const routes: Routes = [
     { path: '', component: PostsListComponent },
-  {path: 'post/:id', component: SinglePost},
-  { path: '**', redirectTo: '' }
+    {path: 'post/:id', component: SinglePost},
+    { path: '**', redirectTo: '' }
 ];

@@ -3,12 +3,13 @@ import { CommonModule } from '@angular/common';
 import { Post } from '../../models/post';
 import { ApiService } from '../../services/api';
 import { PaginationComponent } from '../pagination/pagination';
+import { RouterLink } from '@angular/router';
 
 
 @Component({
   selector: 'app-posts-list',
   standalone: true,
-  imports: [CommonModule, PaginationComponent],
+  imports: [CommonModule, PaginationComponent, RouterLink],
   templateUrl: './posts-list.html',
   styleUrls: ['./posts-list.scss']
 })
