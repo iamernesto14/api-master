@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { Post } from '../../models/post';
-import { ApiService } from '../../services/api';
+import { PostService } from '../../services/post';
 import { AuthService } from '../../services/auth';
 import { PaginationComponent } from '../pagination/pagination';
 
@@ -21,26 +21,23 @@ export class PostsListComponent implements OnInit {
   totalItems: number = 100;
 
   constructor(
-    private apiService: ApiService,
-    private authService: AuthService,
-    private router: Router // Inject Router
-  ) {}
+    private postService: PostService,
+    private authService: AuthService
+  ) {
+    // Reactively update posts and errorMessage when signals change
+    effect(() => {
+      const allPosts: Post[] = this.postService.allPosts();
+      this.posts = allPosts.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize);
+      this.errorMessage = this.postService.error();
+    });
+  }
 
   ngOnInit(): void {
     this.loadPosts();
   }
 
   loadPosts(): void {
-    this.apiService.getPosts(this.currentPage, this.pageSize).subscribe({
-      next: (posts) => {
-        this.posts = posts;
-        this.errorMessage = null;
-      },
-      error: (error) => {
-        this.errorMessage = error.message;
-        this.posts = [];
-      }
-    });
+    this.postService.loadPosts(this.currentPage, this.pageSize);
   }
 
   onPageChange(page: number): void {
@@ -50,6 +47,6 @@ export class PostsListComponent implements OnInit {
 
   logout(): void {
     this.authService.logout();
-    this.router.navigate(['/login']); // Navigate to login
+    this.postService.clearLocalPosts(); // Clear local posts on logout
   }
 }

@@ -1,15 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
+import { PostService } from '../../services/post';
 import { Post } from '../../models/post';
 import { Comment } from '../../models/comment';
-import { ApiService } from '../../services/api';
-import { switchMap, forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-single-post',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule],
   templateUrl: './single-post.html',
   styleUrls: ['./single-post.scss']
 })
@@ -19,34 +18,34 @@ export class SinglePostComponent implements OnInit {
   errorMessage: string | null = null;
 
   constructor(
-    private apiService: ApiService,
-    private route: ActivatedRoute
-  ) {}
-
-  ngOnInit(): void {
-    this.loadPostAndComments();
+    private route: ActivatedRoute,
+    private postService: PostService
+  ) {
+    // Reactively update comments when currentComments signal changes
+    effect(() => {
+      const comments: Comment[] = this.postService.currentComments();
+      this.comments = comments;
+    });
   }
 
-  private loadPostAndComments(): void {
-    this.route.paramMap.pipe(
-      switchMap(params => {
-        const id = Number(params.get('id'));
-        return forkJoin({
-          post: this.apiService.getPost(id),
-          comments: this.apiService.getComments(id)
-        });
-      })
-    ).subscribe({
-      next: ({ post, comments }) => {
-        this.post = post;
-        this.comments = comments;
-        this.errorMessage = null;
-      },
-      error: (error) => {
-        this.errorMessage = error.message;
-        this.post = null;
-        this.comments = [];
-      }
-    });
+  ngOnInit(): void {
+    const id = Number(this.route.snapshot.paramMap.get('id'));
+    if (id) {
+      this.postService.loadPost(id).subscribe({
+        next: (post) => {
+          this.post = post;
+          this.loadComments(id);
+        },
+        error: (err) => {
+          this.errorMessage = err.message || 'Failed to load post';
+        }
+      });
+    } else {
+      this.errorMessage = 'Invalid post ID';
+    }
+  }
+
+  private loadComments(postId: number): void {
+    this.postService.loadComments(postId);
   }
 }

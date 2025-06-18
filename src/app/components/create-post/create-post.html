@@ -1,1 +1,38 @@
-<p>create-post works!</p>
+<div class="create-post-container">
+  <h1>Create New Post</h1>
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
+  <form [formGroup]="postForm" (ngSubmit)="createPost()">
+    <div class="form-group">
+      <label for="title">Title</label>
+      <input
+        id="title"
+        formControlName="title"
+        [ngClass]="{'invalid': title?.invalid && (title?.dirty || title?.touched)}"
+      >
+      <div *ngIf="title?.invalid && (title?.dirty || title?.touched)" class="error">
+        <div *ngIf="title?.errors?.['required']">Title is required.</div>
+        <div *ngIf="title?.errors?.['minlength']">Title must be at least 5 characters.</div>
+        <div *ngIf="title?.errors?.['profanity']">{{ title?.errors?.['profanity'] }}</div>
+        <div *ngIf="title?.errors?.['unsafe']">{{ title?.errors?.['unsafe'] }}</div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="body">Body</label>
+      <textarea
+        id="body"
+        formControlName="body"
+        [ngClass]="{'invalid': body?.invalid && (body?.dirty || body?.touched)}"
+      ></textarea>
+      <div *ngIf="body?.invalid && (body?.dirty || body?.touched)" class="error">
+        <div *ngIf="body?.errors?.['required']">Body is required.</div>
+        <div *ngIf="body?.errors?.['minlength']">Body must be at least 10 characters.</div>
+        <div *ngIf="body?.errors?.['profanity']">{{ body?.errors?.['profanity'] }}</div>
+        <div *ngIf="body?.errors?.['unsafe']">{{ body?.errors?.['unsafe'] }}</div>
+      </div>
+    </div>
+    <button type="submit" [disabled]="postForm.invalid">Create Post</button>
+    <button type="button" (click)="cancel()">Cancel</button>
+  </form>
+</div>

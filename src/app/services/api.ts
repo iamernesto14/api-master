@@ -21,7 +21,6 @@ export class ApiService {
     private errorHandler: ErrorHandlerService
   ) {}
 
-  // GET: Fetch paginated posts with caching
   getPosts(page: number = 1, limit: number = 10): Observable<Post[]> {
     const url = `${this.apiUrl}/posts`;
     let params = new HttpParams()
@@ -41,7 +40,6 @@ export class ApiService {
     );
   }
 
-  // GET: Fetch a single post by ID with caching
   getPost(id: number): Observable<Post> {
     const url = `${this.apiUrl}/posts/${id}`;
     const cacheKey = this.getCacheKey(url);
@@ -58,7 +56,6 @@ export class ApiService {
     );
   }
 
-  // GET: Fetch comments for a post with caching
   getComments(postId: number): Observable<Comment[]> {
     const url = `${this.apiUrl}/posts/${postId}/comments`;
     const cacheKey = this.getCacheKey(url);
@@ -75,23 +72,26 @@ export class ApiService {
     );
   }
 
-  // POST: Create a new post (no caching)
   createPost(post: Partial<Post>): Observable<Post> {
-    return this.http.post<Post>(`${this.apiUrl}/posts`, post).pipe(
+    const url = `${this.apiUrl}/posts`;
+    return this.http.post<Post>(url, post).pipe(
+      tap(() => this.clearCache()), // Invalidate cache on create
       catchError(error => this.errorHandler.handleError(error))
     );
   }
 
-  // PUT: Update an existing post (no caching)
   updatePost(id: number, post: Partial<Post>): Observable<Post> {
-    return this.http.put<Post>(`${this.apiUrl}/posts/${id}`, post).pipe(
+    const url = `${this.apiUrl}/posts/${id}`;
+    return this.http.put<Post>(url, post).pipe(
+      tap(() => this.clearCache()), // Invalidate cache on update
       catchError(error => this.errorHandler.handleError(error))
     );
   }
 
-  // DELETE: Delete a post (no caching)
   deletePost(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/posts/${id}`).pipe(
+    const url = `${this.apiUrl}/posts/${id}`;
+    return this.http.delete<void>(url).pipe(
+      tap(() => this.clearCache()), // Invalidate cache on delete
       catchError(error => this.errorHandler.handleError(error))
     );
   }
@@ -106,7 +106,7 @@ export class ApiService {
     if (entry && (Date.now() - entry.timestamp) < this.cacheDurationMs) {
       return entry.data;
     }
-    this.cache.delete(key); // Remove expired cache
+    this.cache.delete(key);
     return null;
   }
 
@@ -114,7 +114,6 @@ export class ApiService {
     this.cache.set(key, { data, timestamp: Date.now() });
   }
 
-  // Method to clear cache (for testing or cache invalidation)
   clearCache(): void {
     this.cache.clear();
   }
