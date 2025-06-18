@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError, timer } from 'rxjs';
-import { retry } from 'rxjs/operators';
+import { mergeMap, retryWhen } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -43,7 +43,6 @@ export class ErrorHandlerService {
       }
     }
 
-    // Log error for debugging (in production, integrate with a logging service)
     console.error(logMessage);
 
     // Return error with user-friendly message
@@ -54,16 +53,21 @@ export class ErrorHandlerService {
   retryRequest<T>(maxRetries: number = 3, delayMs: number = 1000): (source: Observable<T>) => Observable<T> {
     return (source: Observable<T>) =>
       source.pipe(
-        retry({
-          count: maxRetries,
-          delay: (error, attempt) => {
-            // Skip retry for non-retryable errors (e.g., 400, 401, 403, 404)
-            if ([400, 401, 403, 404].includes(error.status)) {
-              throw error;
-            }
-            return timer(delayMs * (attempt + 1)); // Exponential backoff
-          }
-        })
+        retryWhen(errors =>
+          errors.pipe(
+            mergeMap((error, attempt) => {
+              // Skip retry for non-retryable errors (e.g., 400, 401, 403, 404)
+              if ([400, 401, 403, 404].includes(error.status)) {
+                return throwError(() => error);
+              }
+              // Retry up to maxRetries with delay
+              if (attempt < maxRetries) {
+                return timer(delayMs * (attempt + 1)); 
+              }
+              return throwError(() => error);
+            })
+          )
+        )
       );
   }
 }

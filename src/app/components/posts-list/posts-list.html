@@ -12,4 +12,10 @@
       <p>{{ post.body }}</p>
     </li>
   </ul>
+  <app-pagination
+    [currentPage]="currentPage"
+    [pageSize]="pageSize"
+    [totalItems]="totalItems"
+    (pageChange)="onPageChange($event)"
+  ></app-pagination>
 </div>
