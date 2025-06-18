@@ -1,7 +1,10 @@
 <div class="posts-container">
   <div class="header">
     <h1>Posts List</h1>
-    <button (click)="logout()" class="logout-button">Logout</button>
+    <div class="actions">
+      <button [routerLink]="['/create-post']" class="create-post-button">Create Post</button>
+      <button (click)="logout()" class="logout-button">Logout</button>
+    </div>
   </div>
   <div *ngIf="errorMessage" class="error-message">
     {{ errorMessage }}
