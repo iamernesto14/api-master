@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router, RouterLink } from '@angular/router';
 import { Post } from '../../models/post';
 import { ApiService } from '../../services/api';
+import { AuthService } from '../../services/auth';
 import { PaginationComponent } from '../pagination/pagination';
-import { RouterLink } from '@angular/router';
-
 
 @Component({
   selector: 'app-posts-list',
   standalone: true,
-  imports: [CommonModule, PaginationComponent, RouterLink],
+  imports: [CommonModule, RouterLink, PaginationComponent],
   templateUrl: './posts-list.html',
   styleUrls: ['./posts-list.scss']
 })
@@ -18,9 +18,13 @@ export class PostsListComponent implements OnInit {
   errorMessage: string | null = null;
   currentPage: number = 1;
   pageSize: number = 10;
-  totalItems: number = 100; // JSONPlaceholder has ~100 posts
+  totalItems: number = 100;
 
-  constructor(private apiService: ApiService) {}
+  constructor(
+    private apiService: ApiService,
+    private authService: AuthService,
+    private router: Router // Inject Router
+  ) {}
 
   ngOnInit(): void {
     this.loadPosts();
@@ -42,5 +46,10 @@ export class PostsListComponent implements OnInit {
   onPageChange(page: number): void {
     this.currentPage = page;
     this.loadPosts();
+  }
+
+  logout(): void {
+    this.authService.logout();
+    this.router.navigate(['/login']); // Navigate to login
   }
 }
