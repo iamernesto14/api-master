@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Post } from '../models/post';
@@ -18,10 +18,13 @@ export class ApiService {
     private errorHandler: ErrorHandlerService
   ) {}
 
-  // GET: Fetch all posts
-  getPosts(): Observable<Post[]> {
-    return this.http.get<Post[]>(`${this.apiUrl}/posts`).pipe(
-      this.errorHandler.retryRequest(), // Apply retry logic
+  // GET: Fetch paginated posts
+  getPosts(page: number = 1, limit: number = 10): Observable<Post[]> {
+    let params = new HttpParams()
+      .set('_page', page.toString())
+      .set('_limit', limit.toString());
+    return this.http.get<Post[]>(`${this.apiUrl}/posts`, { params }).pipe(
+      this.errorHandler.retryRequest(),
       catchError(error => this.errorHandler.handleError(error))
     );
   }
@@ -45,21 +48,21 @@ export class ApiService {
   // POST: Create a new post
   createPost(post: Partial<Post>): Observable<Post> {
     return this.http.post<Post>(`${this.apiUrl}/posts`, post).pipe(
-      catchError(error => this.errorHandler.handleError(error)) // No retry for POST
+      catchError(error => this.errorHandler.handleError(error))
     );
   }
 
   // PUT: Update an existing post
   updatePost(id: number, post: Partial<Post>): Observable<Post> {
     return this.http.put<Post>(`${this.apiUrl}/posts/${id}`, post).pipe(
-      catchError(error => this.errorHandler.handleError(error)) // No retry for PUT
+      catchError(error => this.errorHandler.handleError(error))
     );
   }
 
   // DELETE: Delete a post
   deletePost(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/posts/${id}`).pipe(
-      catchError(error => this.errorHandler.handleError(error)) // No retry for DELETE
+      catchError(error => this.errorHandler.handleError(error))
     );
   }
 }
