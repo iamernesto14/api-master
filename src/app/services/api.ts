@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
 import { Post } from '../models/post';
 import { Comment } from '../models/comment';
 import { environment } from '../../environments/environment';
@@ -21,27 +21,29 @@ export class ApiService {
     private errorHandler: ErrorHandlerService
   ) {}
 
-  // GET: Fetch paginated posts with caching
-  getPosts(page: number = 1, limit: number = 10): Observable<Post[]> {
+  getPosts(page: number = 1, limit: number = 10): Observable<{ posts: Post[], total: number }> {
     const url = `${this.apiUrl}/posts`;
     let params = new HttpParams()
       .set('_page', page.toString())
       .set('_limit', limit.toString());
     const cacheKey = this.getCacheKey(url, params);
 
-    const cached = this.getCachedData<Post[]>(cacheKey);
+    const cached = this.getCachedData<{ posts: Post[], total: number }>(cacheKey);
     if (cached) {
       return of(cached);
     }
 
-    return this.http.get<Post[]>(url, { params }).pipe(
+    return this.http.get<Post[]>(url, { params, observe: 'response' }).pipe(
+      map((response: HttpResponse<Post[]>) => ({
+        posts: response.body || [],
+        total: parseInt(response.headers.get('X-Total-Count') || '100', 10)
+      })),
       this.errorHandler.retryRequest(),
       tap(data => this.setCache(cacheKey, data)),
       catchError(error => this.errorHandler.handleError(error))
     );
   }
 
-  // GET: Fetch a single post by ID with caching
   getPost(id: number): Observable<Post> {
     const url = `${this.apiUrl}/posts/${id}`;
     const cacheKey = this.getCacheKey(url);
@@ -58,7 +60,6 @@ export class ApiService {
     );
   }
 
-  // GET: Fetch comments for a post with caching
   getComments(postId: number): Observable<Comment[]> {
     const url = `${this.apiUrl}/posts/${postId}/comments`;
     const cacheKey = this.getCacheKey(url);
@@ -75,23 +76,26 @@ export class ApiService {
     );
   }
 
-  // POST: Create a new post (no caching)
   createPost(post: Partial<Post>): Observable<Post> {
-    return this.http.post<Post>(`${this.apiUrl}/posts`, post).pipe(
+    const url = `${this.apiUrl}/posts`;
+    return this.http.post<Post>(url, post).pipe(
+      tap(() => this.clearCache()),
       catchError(error => this.errorHandler.handleError(error))
     );
   }
 
-  // PUT: Update an existing post (no caching)
   updatePost(id: number, post: Partial<Post>): Observable<Post> {
-    return this.http.put<Post>(`${this.apiUrl}/posts/${id}`, post).pipe(
+    const url = `${this.apiUrl}/posts/${id}`;
+    return this.http.put<Post>(url, post).pipe(
+      tap(() => this.clearCache()),
       catchError(error => this.errorHandler.handleError(error))
     );
   }
 
-  // DELETE: Delete a post (no caching)
   deletePost(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/posts/${id}`).pipe(
+    const url = `${this.apiUrl}/posts/${id}`;
+    return this.http.delete<void>(url).pipe(
+      tap(() => this.clearCache()),
       catchError(error => this.errorHandler.handleError(error))
     );
   }
@@ -106,7 +110,7 @@ export class ApiService {
     if (entry && (Date.now() - entry.timestamp) < this.cacheDurationMs) {
       return entry.data;
     }
-    this.cache.delete(key); // Remove expired cache
+    this.cache.delete(key);
     return null;
   }
 
@@ -114,7 +118,6 @@ export class ApiService {
     this.cache.set(key, { data, timestamp: Date.now() });
   }
 
-  // Method to clear cache (for testing or cache invalidation)
   clearCache(): void {
     this.cache.clear();
   }
