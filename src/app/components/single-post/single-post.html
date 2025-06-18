@@ -1,0 +1,24 @@
+<div class="post-container">
+  <a routerLink="/">Back to Posts List</a>
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
+  <div *ngIf="!errorMessage && !post" class="loading">
+    Loading post...
+  </div>
+  <div *ngIf="post" class="post-details">
+    <h1>{{ post.title }}</h1>
+    <p>{{ post.body }}</p>
+    <h2>Comments</h2>
+    <div *ngIf="comments.length === 0" class="no-comments">
+      No comments available.
+    </div>
+    <ul *ngIf="comments.length > 0" class="comments-list">
+      <li *ngFor="let comment of comments" class="comment-item">
+        <h3>{{ comment.name }}</h3>
+        <p><strong>{{ comment.email }}</strong></p>
+        <p>{{ comment.body }}</p>
+      </li>
+    </ul>
+  </div>
+</div>
