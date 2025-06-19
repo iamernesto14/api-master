@@ -1,0 +1,47 @@
+@use './variables' as *;
+
+@mixin button-base {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.5;
+  border-radius: $border-radius;
+  transition: background-color 0.3s $transition-easing, transform 0.2s $transition-easing;
+  cursor: pointer;
+
+  &:hover {
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+@mixin card-base {
+  background: #ffffff;
+  border-radius: $border-radius;
+  box-shadow: $shadow;
+  padding: 20px;
+  transition: transform 0.3s $transition-easing;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+
+@mixin typography($size, $weight: 400, $color: $text-color) {
+  font-family: $font-family;
+  font-size: $size;
+  font-weight: $weight;
+  color: $color;
+  line-height: 1.4;
+}

@@ -1,31 +1,186 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
 .pagination {
   display: flex;
-  gap: 5px;
+  align-items: center;
   justify-content: center;
-  margin-top: 20px;
+  gap: 8px;
+  margin: 24px 0;
+  flex-wrap: wrap;
+  
+  button {
+    @include button-base;
+    @include typography(14px, 500);
+    min-width: 44px;
+    height: 44px;
+    padding: 0 16px;
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    color: $text-color;
+    position: relative;
+    overflow: hidden;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
+      opacity: 0;
+      transition: opacity 0.3s $transition-easing;
+    }
+    
+    &:hover:not(:disabled):not(.active) {
+      background: rgba(247, 247, 247, 0.95);
+      border-color: rgba(0, 0, 0, 0.15);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      
+      &::before {
+        opacity: 1;
+      }
+    }
+    
+    &:active:not(:disabled) {
+      transform: translateY(0) scale(0.96);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    }
+    
+    &.active {
+      background: linear-gradient(135deg, $primary-color, darken($primary-color, 8%));
+      color: white;
+      border-color: $primary-color;
+      box-shadow: 0 4px 16px rgba(0, 122, 255, 0.25);
+      font-weight: 600;
+      
+      &::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 6px;
+        height: 6px;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        animation: pulse 2s infinite;
+      }
+      
+      &:hover {
+        background: linear-gradient(135deg, lighten($primary-color, 5%), $primary-color);
+        transform: translateY(-1px) scale(1.02);
+        box-shadow: 0 6px 20px rgba(0, 122, 255, 0.35);
+      }
+    }
+    
+    &:disabled {
+      background: rgba(245, 245, 247, 0.6);
+      color: rgba(29, 29, 31, 0.3);
+      border-color: rgba(0, 0, 0, 0.05);
+      cursor: not-allowed;
+      
+      &:hover {
+        transform: none;
+        box-shadow: none;
+      }
+    }
+    
+    &:first-child,
+    &:last-child {
+      padding: 0 20px;
+      font-weight: 500;
+      background: rgba(255, 255, 255, 0.9);
+      
+      &:hover:not(:disabled) {
+        background: $primary-color;
+        color: white;
+        border-color: $primary-color;
+        box-shadow: 0 4px 16px rgba(0, 122, 255, 0.2);
+      }
+      
+      &:disabled {
+        background: rgba(245, 245, 247, 0.5);
+        
+        &::before {
+          content: '';
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          width: 1px;
+          height: 20px;
+          background: rgba(29, 29, 31, 0.1);
+          transform: translate(-50%, -50%) rotate(45deg);
+        }
+      }
+    }
+  }
+  
+  button:not(:first-child):not(:last-child) {
+    border-radius: 50%;
+    min-width: 44px;
+    width: 44px;
+    padding: 0;
+    font-weight: 500;
+    
+    &:hover:not(:disabled):not(.active) {
+      background: rgba(0, 122, 255, 0.1);
+      border-color: rgba(0, 122, 255, 0.2);
+      color: $primary-color;
+    }
+  }
 }
 
-.nav-button, .page-button {
-  padding: 8px 12px;
-  border: 1px solid #ddd;
-  background-color: #fff;
-  cursor: pointer;
-  border-radius: 4px;
-  font-size: 14px;
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.3;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: translate(-50%, -50%) scale(1.2);
+  }
 }
 
-.nav-button:disabled {
-  background-color: #f5f5f5;
-  cursor: not-allowed;
-  color: #aaa;
+// Responsive design
+@media (max-width: 768px) {
+  .pagination {
+    gap: 4px;
+    margin: 16px 0;
+    
+    button {
+      min-width: 36px;
+      height: 36px;
+      @include typography(13px, 500);
+      
+      &:first-child,
+      &:last-child {
+        padding: 0 14px;
+        @include typography(12px, 500);
+      }
+    }
+    
+    button:not(:first-child):not(:last-child) {
+      min-width: 36px;
+      width: 36px;
+    }
+  }
 }
 
-.page-button.active {
-  background-color: #1976d2;
-  color: #fff;
-  border-color: #1976d2;
-}
+@media (max-width: 480px) {
+  .pagination {
 
-.page-button:hover:not(.active) {
-  background-color: #e0e0e0;
+    button:not(:first-child):not(:last-child):not(.active) {
+      display: none;
+      
+      &:nth-child(n+2):nth-child(-n+4) {
+        display: flex;
+      }
+    }
+    
+    button.active {
+      display: flex !important;
+    }
+  }
 }
