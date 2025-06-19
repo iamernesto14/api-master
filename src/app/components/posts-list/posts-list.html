@@ -16,10 +16,12 @@
 
 <div class="posts-container">
   <div *ngFor="let post of posts" class="post-card">
-    <h2>
-      <a [routerLink]="['/post', post.id]">{{ post.title }}</a>
+    <a [routerLink]="['/post', post.id]">
+      <h2>
+      {{ post.title }}
     </h2>
     <p>{{ post.body }}</p>
+    </a>
   </div>
 </div>
 
