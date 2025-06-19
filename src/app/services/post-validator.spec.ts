@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { PostValidator } from './post-validator';
+import { PostValidatorService } from './post-validator';
 
 describe('PostValidator', () => {
-  let service: PostValidator;
+  let service: PostValidatorService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(PostValidator);
+    service = TestBed.inject(PostValidatorService);
   });
 
   it('should be created', () => {
