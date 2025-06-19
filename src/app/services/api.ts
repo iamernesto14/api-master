@@ -14,7 +14,7 @@ import { CacheEntry } from '../models/api-response';
 export class ApiService {
   private readonly apiUrl = environment.apiUrl;
   private cache = new Map<string, CacheEntry<any>>();
-  private readonly cacheDurationMs = 5 * 60 * 1000; // 5 minutes
+  private readonly cacheDurationMs = 5 * 60 * 1000; 
 
   constructor(
     private http: HttpClient,

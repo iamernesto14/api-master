@@ -1,4 +1,4 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable, signal, computed, Inject } from '@angular/core';
 import { Post } from '../models/post';
 import { Comment } from '../models/comment';
 import { ApiService } from './api';
@@ -25,7 +25,7 @@ export class PostService {
   totalPosts = computed(() => this.totalItems());
 
   constructor(
-    private apiService: ApiService,
+    @Inject(ApiService) private apiService: ApiService,
     private postValidator: PostValidatorService
   ) {
     this.loadFromLocalStorage();
