@@ -3,7 +3,7 @@ import { Post } from '../models/post';
 import { Comment } from '../models/comment';
 import { ApiService } from './api';
 import { PostValidatorService } from './post-validator';
-import { Observable, of } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 
 @Injectable({
@@ -120,6 +120,45 @@ export class PostService {
         this.error.set(err.message);
       }
     });
+  }
+
+  updatePost(post: Partial<Post>): Observable<Post> {
+    if (!post.id) {
+      this.error.set('Post ID is required for updating');
+      return throwError(() => new Error('Post ID is required'));
+    }
+
+    const sanitizedPost: Partial<Post> = {
+      id: post.id,
+      userId: post.userId || 1,
+      title: this.postValidator.sanitizeInput(post.title || ''),
+      body: this.postValidator.sanitizeInput(post.body || '')
+    };
+
+    return this.apiService.updatePost(post.id, sanitizedPost).pipe(
+      tap(updatedPost => {
+        // Update localPosts if the post exists locally
+        this.localPosts.update(current => {
+          const index = current.findIndex(p => p.id === post.id);
+          if (index !== -1) {
+            current[index] = { ...current[index], ...sanitizedPost };
+            return [...current];
+          }
+          return current;
+        });
+        // Update current post if it's being viewed
+        if (this.post()?.id === post.id) {
+          this.post.set({ ...this.post()!, ...sanitizedPost });
+        }
+        this.saveToLocalStorage();
+        this.apiService.clearCache();
+        this.error.set(null);
+      }),
+      catchError(err => {
+        this.error.set(err.message);
+        throw err;
+      })
+    );
   }
 
   clearLocalPosts(): void {

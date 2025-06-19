@@ -1,6 +1,6 @@
 import { Component, OnInit, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Location } from '@angular/common'; // Add Location
 import { PostService } from '../../services/post';
 import { Post } from '../../models/post';
@@ -9,7 +9,7 @@ import { Comment } from '../../models/comment';
 @Component({
   selector: 'app-single-post',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './single-post.html',
   styleUrls: ['./single-post.scss']
 })

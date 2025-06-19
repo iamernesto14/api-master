@@ -1,5 +1,6 @@
 <section class="post-header">
   <button (click)="goBack()" class="btn">Back</button>
+  <a *ngIf="post" [routerLink]="['/edit-post', post.id]" class="edit-link">Edit</a>
 </section>
 
 <div *ngIf="errorMessage" class="error">

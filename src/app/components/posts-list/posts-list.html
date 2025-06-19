@@ -15,12 +15,13 @@
 </div>
 
 <div class="posts-container">
-  <div *ngFor="let post of posts" class="post-card">
-    <h2>
-      <a [routerLink]="['/post', post.id]">{{ post.title }}</a>
-    </h2>
+  <a [routerLink]="['/post', post.id]" *ngFor="let post of posts" class="post-card">
+      <h2>
+      {{ post.title }}
+      </h2>
     <p>{{ post.body }}</p>
-  </div>
+    <a [routerLink]="['/edit-post', post.id]" class="edit-link">Edit</a>
+  </a>
 </div>
 
 <app-pagination
