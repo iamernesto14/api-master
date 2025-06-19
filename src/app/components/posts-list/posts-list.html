@@ -22,6 +22,7 @@
     </h2>
     <p>{{ post.body }}</p>
     </a>
+    <a [routerLink]="['/edit-post', post.id]" class="edit-link">Edit</a>
   </div>
 </div>
 

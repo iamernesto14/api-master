@@ -431,3 +431,11 @@ app-pagination {
     }
   }
 }
+
+.edit-link {
+  @include typography(14px, 500, $primary-color);
+  text-decoration: none;
+  &:hover {
+    text-decoration: underline;
+  }
+}
