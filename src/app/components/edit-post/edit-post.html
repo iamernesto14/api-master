@@ -1,1 +1,30 @@
-<p>edit-post works!</p>
+<div class="container">
+  <h2>Edit Post</h2>
+  <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+  <form [formGroup]="postForm" (ngSubmit)="updatePost()">
+    <div class="form-group">
+      <label for="title">Title</label>
+      <input id="title" formControlName="title" placeholder="Enter post title" />
+      <div *ngIf="title?.touched && title?.invalid" class="error">
+        <div *ngIf="title?.errors?.['required']">Title is required.</div>
+        <div *ngIf="title?.errors?.['minlength']">Title must be at least 5 characters.</div>
+        <div *ngIf="title?.errors?.['profanity']">{{ title?.errors?.['profanity'] }}</div>
+        <div *ngIf="title?.errors?.['unsafe']">{{ title?.errors?.['unsafe'] }}</div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="body">Body</label>
+      <textarea id="body" formControlName="body" placeholder="Enter post content"></textarea>
+      <div *ngIf="body?.touched && body?.invalid" class="error">
+        <div *ngIf="body?.errors?.['required']">Body is required.</div>
+        <div *ngIf="body?.errors?.['minlength']">Body must be at least 10 characters.</div>
+        <div *ngIf="body?.errors?.['profanity']">{{ body?.errors?.['profanity'] }}</div>
+        <div *ngIf="body?.errors?.['unsafe']">{{ body?.errors?.['unsafe'] }}</div>
+      </div>
+    </div>
+    <div class="button-group">
+      <button type="submit" [disabled]="postForm.invalid">Update Post</button>
+      <button type="button" (click)="cancel()">Cancel</button>
+    </div>
+  </form>
+</div>

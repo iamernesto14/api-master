@@ -1,0 +1,73 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.container {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+  @include card-base;
+}
+
+h2 {
+  @include typography(24px, 600);
+  margin-bottom: 20px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+
+  label {
+    @include typography(16px, 500);
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  input, textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid $form-border-color;
+    border-radius: $border-radius;
+    @include typography(16px);
+    transition: border-color 0.3s $transition-easing;
+
+    &:focus {
+      border-color: $form-border-focus;
+      outline: none;
+    }
+  }
+
+  textarea {
+    min-height: 150px;
+    resize: vertical;
+  }
+}
+
+.error {
+  color: $error-color;
+  @include typography(14px);
+  margin-top: 5px;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+
+  button {
+    @include button-base;
+    padding: 12px 24px;
+
+    &:first-child {
+      background: $primary-color;
+      color: white;
+
+      &:disabled {
+        background: darken($primary-color, 10%);
+      }
+    }
+
+    &:last-child {
+      background: $secondary-color;
+      color: $text-color;
+    }
+  }
+}
