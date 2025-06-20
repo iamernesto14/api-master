@@ -41,6 +41,28 @@
         box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
       }
     }
+
+    .btn-logout {
+      @include button-base;
+      @include typography(14px, 500);
+      padding: 12px 20px;
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      transition: all 0.3s ease;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+
+      &:hover {
+        background: rgb(219, 92, 92);
+        color: white;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      &:active {
+        transform: scale(0.98);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      }
+    }
   }
 }
 
