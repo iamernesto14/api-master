@@ -1,24 +1,65 @@
 @use '../../styles/variables' as *;
 @use '../../styles/mixins' as *;
 
-.login-container {
-  @include card-base;
-  max-width: 400px;
-  margin: 50px auto;
-  text-align: center;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  
-  h1 {
-    @include typography(28px, 600, $text-color);
-    margin-bottom: 24px;
-    background: linear-gradient(135deg, $primary-color, lighten($primary-color, 15%));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+// Wrapper for split layout
+.login-wrapper {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  background-color: #f9f9f9;
+  padding: 0.8rem;
+
+  .login-left,
+  .login-right {
+    flex: 1;
+  }
+
+  .login-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 24px;
+
+    .login-container {
+      @include card-base;
+      width: 100%;
+      max-width: 400px;
+      max-height: 90vh;
+      overflow-y: auto;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+
+      h1 {
+        @include typography(28px, 600, $text-color);
+        margin-bottom: 24px;
+        background: linear-gradient(90deg, #fca25c, #e275bc, #88aee5);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+    }
+  }
+
+  .login-right {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 1rem;
   }
 }
+
+}
+
 
 .error {
   @include typography(14px, 500, $accent-color);
@@ -30,7 +71,7 @@
   display: flex;
   align-items: center;
   animation: shake 0.5s ease-in-out;
-  
+
   &::before {
     content: '⚠️';
     margin-right: 8px;
@@ -49,18 +90,18 @@
   flex-direction: column;
   gap: 20px;
   text-align: left;
-  
+
   > div {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    
+
     label {
       @include typography(14px, 500, $text-color);
       margin-left: 4px;
       transition: color 0.2s $transition-easing;
     }
-    
+
     input {
       @include typography(16px, 400, $text-color);
       background: rgba(245, 245, 247, 0.8);
@@ -68,55 +109,54 @@
       border-radius: 10px;
       padding: 14px 16px;
       transition: all 0.3s $transition-easing;
-      
+
       &::placeholder {
         color: rgba(29, 29, 31, 0.5);
         transition: opacity 0.2s $transition-easing;
       }
-      
+
       &:focus {
         outline: none;
-        border-color: $primary-color;
+        border-color: #ce62a8;;
         background: rgba(255, 255, 255, 0.95);
         box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.15);
         transform: translateY(-1px);
-        
+
         &::placeholder {
           opacity: 0;
         }
-        
+
         + label {
           color: $primary-color;
         }
       }
-      
+
       &:hover:not(:focus) {
-        border-color: rgba(0, 0, 0, 0.2);
         background: rgba(255, 255, 255, 0.9);
       }
-      
+
       &:invalid:not(:placeholder-shown) {
         border-color: $accent-color;
         background: rgba(255, 45, 85, 0.05);
       }
     }
-    
+
     &:focus-within label {
       color: $primary-color;
       transform: translateY(-2px);
     }
   }
-  
+
   .btn {
     @include button-base;
-    background: linear-gradient(135deg, $primary-color, darken($primary-color, 10%));
+    background: linear-gradient(135deg, #fca25c, #f78c7d, #e275bc, #b47ddb, #88aee5);
     color: white;
     border: none;
     margin-top: 12px;
     font-weight: 600;
     position: relative;
     overflow: hidden;
-    
+
     &::before {
       content: '';
       position: absolute;
@@ -127,25 +167,31 @@
       background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
       transition: left 0.5s;
     }
-    
+
     &:hover {
-      background: linear-gradient(135deg, lighten($primary-color, 5%), $primary-color);
-      box-shadow: 0 8px 20px rgba(0, 122, 255, 0.3);
-      
+      background-position: right center;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+     background: linear-gradient(135deg, #ffce85, #fca8a8, #eca2d4, #c2a0e3, #a3c8f1);
+
       &::before {
         left: 100%;
       }
     }
-    
+
     &:active {
-      background: linear-gradient(135deg, darken($primary-color, 5%), darken($primary-color, 15%));
-      box-shadow: 0 4px 12px rgba(0, 122, 255, 0.4);
+      background: linear-gradient(135deg, #d97b46, #e06a6a, #ce62a8, #9b6dc6, #6e97d1);
+    transform: scale(0.96);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    border-color: #ce62a8;
     }
-    
+
     &:disabled {
-      background: rgba(0, 0, 0, 0.3);
-      cursor: not-allowed;
-      
+      background: linear-gradient(135deg, #d97b46, #e06a6a, #ce62a8, #9b6dc6, #6e97d1);
+    transform: scale(0.96);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    border-color: #ce62a8;
+
       &:hover {
         transform: none;
         box-shadow: none;
@@ -154,29 +200,53 @@
   }
 }
 
-// Responsive design
-@media (max-width: 480px) {
-  .login-container {
-    margin: 20px;
-    padding: 24px 20px;
-    
-    h1 {
-      @include typography(24px, 600);
-      margin-bottom: 20px;
+// Responsive adjustments
+@media (max-width: 768px) {
+  .login-wrapper {
+    flex-direction: column;
+    background: radial-gradient(
+  circle at bottom,
+  #fca25c 0%,
+  #f78c7d 15%,
+  #e275bc 30%,
+  #b47ddb 45%,
+  #88aee5 60%,
+  #e9edf4 80%,
+  #f2f2f2 90%,
+  #f8f8f8 100%
+);
+
+    .login-right {
+      display: none;
     }
-  }
-  
-  .login-form {
-    gap: 16px;
-    
-    > div input {
-      padding: 12px 14px;
-      @include typography(16px, 400);
+
+    .login-left {
+      padding: 20px;
     }
-    
-    .btn {
-      padding: 12px 20px;
-      @include typography(16px, 600);
+
+    .login-container {
+      padding: 24px 20px;
+      color: #ce62a8;
+
+      h1 {
+        @include typography(24px, 600);
+        margin-bottom: 20px;
+      }
+    }
+
+    .login-form {
+      gap: 16px;
+
+      > div input {
+        padding: 12px 14px;
+        @include typography(16px, 400);
+      }
+
+      .btn {
+        padding: 12px 20px;
+        @include typography(16px, 600);
+      }
     }
   }
 }
+

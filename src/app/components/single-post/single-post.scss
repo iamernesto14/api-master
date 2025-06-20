@@ -1,372 +1,327 @@
 @use '../../styles/variables' as *;
 @use '../../styles/mixins' as *;
 
+/* Main container */
+.post-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  min-height: 100vh;
+}
+
+/* Header with improved layout */
 .post-header {
   display: flex;
   align-items: center;
-  margin: 0 40px 24px;
-  padding: 16px 0;
-  border-bottom: 1px solid rgba(210, 210, 215, 0.3);
-  
-  .btn {
-    @include button-base;
-    @include typography(14px, 500);
-    background: rgba(255, 255, 255, 0.8);
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    color: $text-color;
-    padding: 10px 20px;
-    position: relative;
-    overflow: hidden;
-    
-    // Back arrow icon
-    &::before {
-      content: '←';
-      margin-right: 8px;
-      font-size: 16px;
-      font-weight: 600;
-      transition: transform 0.3s $transition-easing;
-    }
-    
-    &:hover {
-      background: $primary-color;
-      color: white;
-      border-color: $primary-color;
-      box-shadow: 0 4px 16px rgba(0, 122, 255, 0.2);
-      
-      &::before {
-        transform: translateX(-3px);
-      }
-    }
-    
-    &:active {
-      transform: translateY(0) scale(0.98);
-      box-shadow: 0 2px 8px rgba(0, 122, 255, 0.3);
-    }
-  }
+  justify-content: space-between;
+  padding: 16px 28px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.08));
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  margin-bottom: 24px;
+  position: sticky;
+  top: 20px;
+  z-index: 100;
+  animation: slideInFromTop 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
-.error {
-  @include typography(14px, 500, $accent-color);
-  background: linear-gradient(135deg, lighten($accent-color, 48%), lighten($accent-color, 45%));
-  border: 1px solid lighten($accent-color, 25%);
+.btn {
+  background: linear-gradient(135deg, rgba(0, 122, 255, 0.9), rgba(88, 86, 214, 0.9));
+  border: none;
   border-radius: 12px;
-  padding: 16px 20px;
-  margin-bottom: 24px;
-  display: flex;
-  align-items: center;
+  color: white;
+  padding: 12px 24px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(0, 122, 255, 0.3);
   position: relative;
   overflow: hidden;
-  animation: slideInError 0.4s $transition-easing;
-  
-  &::before {
-    content: '⚠️';
-    margin-right: 12px;
-    font-size: 18px;
-    animation: bounce 2s infinite;
-  }
-  
-  &::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    animation: shimmer 2s infinite;
-  }
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-@keyframes slideInError {
-  0% {
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(0, 122, 255, 0.4);
+  background: linear-gradient(135deg, rgba(0, 122, 255, 1), rgba(88, 86, 214, 1));
+}
+
+.btn:hover::before {
+  left: 100%;
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+/* Error styling */
+.error {
+  background: linear-gradient(135deg, rgba(255, 59, 48, 0.15), rgba(255, 45, 85, 0.1));
+  border: 1px solid rgba(255, 59, 48, 0.3);
+  border-radius: 20px;
+  padding: 20px 28px;
+  margin-bottom: 24px;
+  color: #ff3b30;
+  font-weight: 500;
+  backdrop-filter: blur(15px);
+  animation: fadeInScale 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  box-shadow: 0 8px 32px rgba(255, 59, 48, 0.1);
+}
+
+/* Main content area with better spacing */
+.content-wrapper {
+  display: grid;
+  gap: 32px;
+  margin-bottom: 40px;
+}
+
+.post-content {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.06));
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 24px;
+  padding: 40px;
+  animation: fadeInUp 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  margin: 2rem;
+}
+
+.post-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+}
+
+.post-content h1 {
+  font-size: 36px;
+  font-weight: 700;
+  margin: 0 0 24px 0;
+  background: linear-gradient(135deg, #1a1a1a, #4a4a4a);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.2;
+  animation: fadeInUp 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s both;
+  letter-spacing: -0.02em;
+}
+
+.post-content p {
+  font-size: 18px;
+  line-height: 1.7;
+  color: #444;
+  margin: 0;
+  animation: fadeInUp 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.4s both;
+  font-weight: 400;
+}
+
+/* Comments section with improved layout */
+.comments-section {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 24px;
+  padding: 32px;
+  animation: fadeInUp 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.6s both;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+  margin: 2rem;
+}
+
+.comments-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 28px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.comments-section h2 {
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.comments-section h2::before {
+  content: '💬';
+  font-size: 20px;
+}
+
+.comments-list {
+  display: grid;
+  gap: 16px;
+}
+
+.no-comments {
+  background: linear-gradient(135deg, rgba(142, 142, 147, 0.1), rgba(142, 142, 147, 0.05));
+  border: 1px solid rgba(142, 142, 147, 0.15);
+  border-radius: 16px;
+  padding: 40px 32px;
+  text-align: center;
+  color: #8e8e93;
+  font-size: 16px;
+  font-weight: 500;
+  backdrop-filter: blur(10px);
+  animation: fadeInScale 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.8s both;
+}
+
+.comment {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  padding: 24px 28px;
+  backdrop-filter: blur(15px);
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  animation: fadeInUp 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+  position: relative;
+  overflow: hidden;
+}
+
+.comment:nth-child(2n) {
+  animation-delay: calc(0.8s + 0.1s);
+}
+
+.comment:nth-child(2n+1) {
+  animation-delay: calc(0.8s + 0.2s);
+}
+
+.comment::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+}
+
+.comment:hover {
+  transform: translateY(-3px);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.1));
+  border-color: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.comment-author {
+  color: #007aff;
+  font-weight: 600;
+  font-size: 16px;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.comment-body {
+  color: #555;
+  font-size: 15px;
+  line-height: 1.6;
+  margin: 0;
+}
+
+
+/* Animations */
+@keyframes slideInFromTop {
+  from {
     opacity: 0;
-    transform: translateY(-10px);
+    transform: translateY(-30px);
   }
-  100% {
+  to {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
-@keyframes bounce {
-  0%, 20%, 50%, 80%, 100% {
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
     transform: translateY(0);
   }
-  40% {
-    transform: translateY(-3px);
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
   }
-  60% {
-    transform: translateY(-2px);
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
 }
 
-@keyframes shimmer {
-  0% {
-    left: -100%;
-  }
-  100% {
-    left: 100%;
-  }
-}
-
-.post-content {
-  @include card-base;
-  margin: 0 40px 32px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.9));
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  position: relative;
-  overflow: hidden;
-  
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, $primary-color, lighten($primary-color, 20%), $primary-color);
-    background-size: 200% 100%;
-    animation: gradientShift 3s ease-in-out infinite;
-  }
-  
-  h1 {
-    @include typography(32px, 600, $text-color);
-    margin-bottom: 20px;
-    line-height: 1.2;
-    background: linear-gradient(135deg, $text-color, lighten($text-color, 20%));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    position: relative;
-    
-    &::after {
-      content: '';
-      position: absolute;
-      bottom: -8px;
-      left: 0;
-      width: 60px;
-      height: 3px;
-      background: linear-gradient(90deg, $primary-color, transparent);
-      border-radius: 2px;
-    }
-  }
-  
-  p {
-    @include typography(18px, 400, rgba(29, 29, 31, 0.8));
-    line-height: 1.6;
-    text-align: justify;
-    margin-top: 16px;
-  }
-}
-
-@keyframes gradientShift {
-  0%, 100% {
-    background-position: 0% 0%;
-  }
-  50% {
-    background-position: 100% 0%;
-  }
-}
-
-.comments-section {
-  @include card-base;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(245, 245, 247, 0.8));
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  margin-left: 40px;
-  margin-right: 40px;
-  margin-bottom: 32px;
-  
-  h2 {
-    @include typography(24px, 600, $text-color);
-    margin-bottom: 24px;
-    padding-bottom: 12px;
-    border-bottom: 2px solid rgba(0, 122, 255, 0.1);
-    position: relative;
-    
-    &::before {
-      content: '💬';
-      margin-right: 12px;
-      font-size: 20px;
-    }
-    
-    &::after {
-      content: '';
-      position: absolute;
-      bottom: -2px;
-      left: 0;
-      width: 80px;
-      height: 2px;
-      background: $primary-color;
-      border-radius: 1px;
-    }
-  }
-  
-  .no-comments {
-    @include typography(16px, 400, rgba(29, 29, 31, 0.6));
-    text-align: center;
-    padding: 40px 20px;
-    background: rgba(245, 245, 247, 0.5);
-    border-radius: 12px;
-    border: 2px dashed rgba(0, 0, 0, 0.1);
-    position: relative;
-    
-    &::before {
-      content: '📝';
-      display: block;
-      font-size: 32px;
-      margin-bottom: 12px;
-      opacity: 0.6;
-    }
-    
-    &::after {
-      content: 'Be the first to share your thoughts!';
-      display: block;
-      margin-top: 8px;
-      @include typography(14px, 500, rgba(29, 29, 31, 0.5));
-    }
-  }
-  
-  .comment {
-    background: rgba(255, 255, 255, 0.7);
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    border-radius: 12px;
-    padding: 16px 20px;
-    margin-bottom: 16px;
-    position: relative;
-    transition: all 0.3s $transition-easing;
-    
-    &::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 0;
-      bottom: 0;
-      width: 4px;
-      background: linear-gradient(135deg, $primary-color, lighten($primary-color, 20%));
-      border-radius: 2px 0 0 2px;
-      opacity: 0;
-      transition: opacity 0.3s $transition-easing;
-    }
-    
-    &:hover {
-      background: rgba(255, 255, 255, 0.95);
-      border-color: rgba(0, 122, 255, 0.2);
-      transform: translateX(4px);
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-      
-      &::before {
-        opacity: 1;
-      }
-    }
-    
-    &:last-child {
-      margin-bottom: 0;
-    }
-    
-    strong {
-      @include typography(16px, 600, $primary-color);
-      display: block;
-      margin-bottom: 8px;
-      position: relative;
-      
-      &::after {
-        content: '';
-        position: absolute;
-        right: 0;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 6px;
-        height: 6px;
-        background: $primary-color;
-        border-radius: 50%;
-        opacity: 0.3;
-      }
-    }
-    
-    // Comment text
-    & > :not(strong) {
-      @include typography(15px, 400, rgba(29, 29, 31, 0.8));
-      line-height: 1.5;
-      display: block;
-      padding-left: 4px;
-    }
-  }
-}
-
-// Responsive design
+/* Responsive design */
 @media (max-width: 768px) {
+  .post-container {
+    padding: 16px;
+  }
+  
   .post-header {
-    margin-bottom: 20px;
-    padding: 12px 0;
-    
-    .btn {
-      @include typography(13px, 500);
-      padding: 8px 16px;
-    }
+    padding: 12px 20px;
+    border-radius: 16px;
+    top: 16px;
+  }
+  
+  .btn {
+    padding: 10px 20px;
+    font-size: 14px;
   }
   
   .post-content {
-    padding: 16px;
-    margin-bottom: 24px;
-    
-    h1 {
-      @include typography(26px, 600);
-      margin-bottom: 16px;
-    }
-    
-    p {
-      @include typography(16px, 400);
-      line-height: 1.5;
-    }
+    padding: 28px 24px;
+    border-radius: 20px;
+  }
+  
+  .post-content h1 {
+    font-size: 28px;
+  }
+  
+  .post-content p {
+    font-size: 16px;
   }
   
   .comments-section {
-    padding: 16px;
-    
-    h2 {
-      @include typography(20px, 600);
-      margin-bottom: 20px;
-    }
-    
-    .comment {
-      padding: 12px 16px;
-      margin-bottom: 12px;
-      
-      strong {
-        @include typography(15px, 600);
-        margin-bottom: 6px;
-      }
-    }
-    
-    .no-comments {
-      padding: 30px 16px;
-      @include typography(15px, 400);
-      
-      &::before {
-        font-size: 28px;
-        margin-bottom: 10px;
-      }
-      
-      &::after {
-        @include typography(13px, 500);
-        margin-top: 6px;
-      }
-    }
+    padding: 24px 20px;
+    border-radius: 20px;
+  }
+  
+  .comment {
+    padding: 20px 22px;
+  }
+  
+  .content-wrapper {
+    gap: 24px;
   }
 }
 
 @media (max-width: 480px) {
-  .post-content {
-    h1 {
-      @include typography(22px, 600);
-    }
-    
-    p {
-      @include typography(15px, 400);
-      text-align: left;
-    }
+  .post-container {
+    padding: 12px;
   }
 }
 
@@ -397,3 +352,25 @@
       transform: scale(0.95);
     }
   }
+  
+  .post-content h1 {
+    font-size: 24px;
+  }
+  
+  .comments-section h2 {
+    font-size: 20px;
+  }
+
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Focus states for accessibility */
+.btn:focus,
+.comment:focus {
+  outline: 2px solid rgba(0, 122, 255, 0.5);
+  outline-offset: 2px;
+}
+

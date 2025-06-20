@@ -1,17 +1,24 @@
-<section class="login-container">
-  <h1>Login</h1>
-  <div *ngIf="errorMessage" class="error">
-    {{ errorMessage }}
+<section class="login-wrapper">
+  <div class="login-left">
+    <div class="login-container">
+      <h1>Login</h1>
+      <div *ngIf="errorMessage" class="error">
+        {{ errorMessage }}
+      </div>
+      <div class="login-form">
+        <div>
+          <label for="username">Username</label>
+          <input id="username" type="text" [(ngModel)]="username" placeholder="Username" required />
+        </div>
+        <div>
+          <label for="password">Password</label>
+          <input id="password" type="password" [(ngModel)]="password" placeholder="Password" required />
+        </div>
+        <button (click)="login()" class="btn">Login</button>
+      </div>
+    </div>
   </div>
-  <div class="login-form">
-    <div>
-      <label for="username">Username</label>
-      <input id="username" type="text" [(ngModel)]="username" placeholder="Username" required />
-    </div>
-    <div>
-      <label for="password">Password</label>
-      <input id="password" type="password" [(ngModel)]="password" placeholder="Password" required />
-    </div>
-    <button (click)="login()" class="btn">Login</button>
+  <div class="login-right">
+    <img src="assets/images/login-bg.webp" alt="Login Illustration" />
   </div>
 </section>
