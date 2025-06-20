@@ -1,4 +1,5 @@
-/* Modern Apple-inspired layout with improved structure */
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
 
 /* Main container */
 .post-container {
@@ -322,7 +323,6 @@
   .post-container {
     padding: 12px;
   }
-<<<<<<< HEAD
 }
 
 // Edit link
@@ -352,7 +352,6 @@
       transform: scale(0.95);
     }
   }
-=======
   
   .post-content h1 {
     font-size: 24px;
@@ -361,7 +360,7 @@
   .comments-section h2 {
     font-size: 20px;
   }
-}
+
 
 /* Smooth scrolling */
 html {
@@ -374,4 +373,4 @@ html {
   outline: 2px solid rgba(0, 122, 255, 0.5);
   outline-offset: 2px;
 }
->>>>>>> feature/UI
+
