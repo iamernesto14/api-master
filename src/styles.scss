@@ -50,6 +50,16 @@ body {
   color: $text-color;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: linear-gradient(
+    to top,
+    #ffeedd 0%,
+    #f3f5ff 40%,
+    #eaf0ff 80%,
+    #ffffff 100%
+  );
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  min-height: 100vh;
 }
 
 h1 {
