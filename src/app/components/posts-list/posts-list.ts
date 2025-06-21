@@ -53,4 +53,15 @@ export class PostsListComponent implements OnInit {
     this.toastr.success('You have been logged out', 'Goodbye');
     this.router.navigate(['/login']);
   }
+
+  navigateToCreatePost(): void {
+    this.authService.isAuthenticated$.subscribe(isAuthenticated => {
+      if (isAuthenticated) {
+        this.router.navigate(['/create-post']);
+      } else {
+        this.toastr.info('Please log in to create a post', 'Authentication Required');
+        this.router.navigate(['/login']);
+      }
+    });
+  }
 }
