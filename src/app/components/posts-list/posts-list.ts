@@ -6,6 +6,7 @@ import { PostService } from '../../services/post';
 import { AuthService } from '../../services/auth';
 import { PaginationComponent } from '../pagination/pagination';
 import { ToastrService } from 'ngx-toastr';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-posts-list',
@@ -20,6 +21,7 @@ export class PostsListComponent implements OnInit {
   currentPage: number = 1;
   pageSize: number = 10;
   totalItems: number = 0;
+  isAuthenticated$: Observable<boolean>;
 
   constructor(
     private postService: PostService,
@@ -27,6 +29,7 @@ export class PostsListComponent implements OnInit {
     private toastr: ToastrService,
     private router: Router
   ) {
+    this.isAuthenticated$ = this.authService.isAuthenticated$;
     effect(() => {
       this.posts = this.postService.allPosts();
       this.errorMessage = this.postService.error();
@@ -55,12 +58,12 @@ export class PostsListComponent implements OnInit {
   }
 
   navigateToCreatePost(): void {
-    this.authService.isAuthenticated$.subscribe(isAuthenticated => {
+    this.isAuthenticated$.subscribe(isAuthenticated => {
       if (isAuthenticated) {
         this.router.navigate(['/create-post']);
       } else {
         this.toastr.info('Please log in to create a post', 'Authentication Required');
-        this.router.navigate(['/login']);
+        this.router.navigate(['/login'], { queryParams: { returnUrl: '/create-post' } });
       }
     });
   }

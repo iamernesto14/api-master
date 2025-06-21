@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../services/auth';
 import { ToastrService } from 'ngx-toastr';
 
@@ -20,7 +20,8 @@ export class LoginComponent {
   constructor(
     private authService: AuthService,
     private router: Router,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private route: ActivatedRoute
   ) {}
 
   login(): void {
@@ -28,7 +29,8 @@ export class LoginComponent {
       next: (success) => {
         if (success) {
           this.toastr.success('Successfully logged in!', 'Welcome');
-          this.router.navigate(['/']);
+          const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+          this.router.navigate([returnUrl], { replaceUrl: true });
         } else {
           this.errorMessage = 'Invalid username or password';
           this.toastr.error(this.errorMessage, 'Login Failed');

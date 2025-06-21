@@ -10,7 +10,6 @@
           "style": "scss"
         }
       },
-      "defaultProject": "api-master",
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",

@@ -2,7 +2,7 @@
   <h1>Posts List</h1>
   <div class="actions">
     <a (click)="navigateToCreatePost()" class="btn">Create Post</a>
-    <button (click)="logout()" class="btn-logout">Logout</button>
+    <button *ngIf="isAuthenticated$ | async" (click)="logout()" class="btn-logout">Logout</button>
   </div>
 </section>
 
@@ -20,7 +20,7 @@
       {{ post.title }}
       </h2>
     <p>{{ post.body }}</p>
-    <a [routerLink]="['/edit-post', post.id]" class="edit-link">Edit</a>
+    <a [routerLink]="['/post', post.id]" *ngIf="isAuthenticated$ | async" class="edit-link">Edit</a>
   </a>
 </div>
 
